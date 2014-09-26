@@ -1,0 +1,39 @@
+#!/bin/sh
+
+source ./config
+
+parted --script ${DISK} mktable msdos
+parted --script ${DISK} mkpart primary ext2 0% 100%
+parted --script ${DISK} set 1 lvm on
+
+pvcreate ${DISK}1
+vgcreate arch ${DISK}1
+lvcreate --name boot --size ${BOOT_SIZE} arch
+lvcreate --name root --size ${ROOT_SIZE} arch
+lvcreate --name swap --size ${SWAP_SIZE} arch
+if [[ -n ${HOME_SIZE} ]]; then
+  lvcreate --name home --size ${HOME_SIZE} arch
+else
+  lvcreate --name home --extents 100%FREE arch
+fi
+
+mkfs.ext4 /dev/arch/boot
+mkfs.ext4 /dev/arch/root
+mkfs.ext4 /dev/arch/home
+mkswap /dev/arch/swap
+
+mount /dev/arch/root /mnt
+mkdir /mnt/boot /mnt/home
+mount /dev/arch/boot /mnt/boot
+mount /dev/arch/home /mnt/home
+swapon /dev/arch/swap
+
+pacstrap /mnt base
+
+genfstab -p /mnt >> /mnt/etc/fstab
+
+arch-chroot /mnt pacman -S --noconfirm puppet
+mv puppet /mnt/root/puppet
+arch-chroot /mnt /root/puppet/run-puppet
+
+umount -R /mnt

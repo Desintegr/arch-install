@@ -1,0 +1,9 @@
+#!/bin/sh
+
+SCRIPT_FOLDER="$(dirname $0)"
+MODULE_PATH="$(puppet config print modulepath):${SCRIPT_FOLDER}/modules"
+
+puppet module install puppetlabs-stdlib
+puppet apply --modulepath ${MODULE_PATH} ${SCRIPT_FOLDER}/manifests/base.pp
+source /etc/profile
+puppet apply --modulepath ${MODULE_PATH} ${SCRIPT_FOLDER}/manifests/postinstall.pp

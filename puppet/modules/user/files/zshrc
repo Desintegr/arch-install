@@ -1,0 +1,117 @@
+# modules
+autoload -U colors && colors
+autoload -U compinit && compinit
+
+# dircolors
+eval $(dircolors -b)
+
+# export
+export HISTFILE=~/.histfile
+export HISTSIZE=10000
+export SAVEHIST=10000
+export EDITOR="vim"
+
+# completion
+zstyle ":completion:*" use-cache yes
+zstyle ":completion:*" cache-path ~/.zsh/cache
+zstyle ":completion:*" menu select=long
+zstyle ":completion:*" completer _complete _approximate
+zstyle ":completion:*" matcher-list "" "m:{a-zA-Z}={A-Za-z}"
+zstyle ":completion:*" list-colors ${(s.:.)LS_COLORS}
+zstyle ":completion:*" ignored-patterns "_*"
+
+# prompt
+if [[ $(whoami) == "root" ]]; then
+  PROMPT=$(print "%{\e[$color[red];$color[bold]m%}%~%{\e[$color[none]m%} %{\e[$color[black];$color[bold]m%}")
+else
+  PROMPT=$(print "%{\e[$color[blue];$color[bold]m%}%~%{\e[$color[none]m%} %{\e[$color[black];$color[bold]m%}")
+fi
+if [[ -n $SSH_CONNECTION ]]; then
+  PROMPT+="%m "
+fi
+PROMPT+=$(print "%#%{\e[$color[none]m%} ")
+
+# key binding
+bindkey "\E[H"    beginning-of-line       # home
+bindkey "\E[2~"   overwrite-mode          # insert
+bindkey "\E[3~"   delete-char             # del
+bindkey "\E[F"    end-of-line             # end
+bindkey "\E[5~"   history-search-backward # page up
+bindkey "\E[6~"   history-search-forward  # page down
+bindkey "\E[A"    up-line-or-history      # up
+bindkey "\E[B"    down-line-or-history    # down
+bindkey "\E[C"    forward-char            # right
+bindkey "\E[D"    backward-char           # left
+
+bindkey "^R"      history-incremental-search-backward # C-r
+bindkey "\E[3;5~" kill-word                           # C-del
+bindkey ";5D"     backward-word                       # C-left
+bindkey ";5C"     forward-word                        # C-right
+
+# options
+setopt auto_cd
+setopt no_bang_hist
+setopt hist_ignore_dups
+setopt hist_reduce_blanks
+setopt inc_append_history
+setopt share_history
+setopt no_clobber
+setopt correct
+
+# short aliases
+alias sudo="sudo " # passing aliases
+alias s="sudo"
+alias ssu="sudo --login"
+alias c="cat"
+alias l="less"
+alias g="grep"
+alias h="head"
+alias t="tail"
+alias v="vim"
+alias vd="vimdiff"
+alias p="sudo pacman"
+alias n="sudo netctl"
+alias sc="sudo systemctl"
+alias agu="sudo apt-get update"
+alias agi="sudo apt-get install"
+alias agdu="sudo apt-get dist-upgrade"
+
+# general aliases
+alias su="su --login"
+alias diff="colordiff --unified"
+alias df="df --human-readable"
+alias du="du --human-readable"
+alias less="less --quit-if-one-screen --chop-long-lines --RAW-CONTROL-CHARS --no-init"
+alias grep="grep --perl-regexp --ignore-case --color"
+alias mkdir="mkdir --parents --verbose"
+alias tree="tree -F --dirsfirst --noreport"
+alias free="free -h"
+alias dmesg="dmesg -H"
+
+# ls aliases
+alias ls="ls --color --classify --group-directories-first --human-readable"
+alias l1="ls -1"
+alias ll="ls -l"
+alias lr="ls --recursive"
+alias la="ls --almost-all"
+alias llr="ll --recursive"
+alias lla="ll --almost-all"
+
+# safety aliases
+alias cp="cp --interactive"
+alias mv="mv --interactive"
+alias rm="rm --interactive"
+alias ln="ln --interactive"
+
+# global aliases
+alias -g WC="| wc --lines"
+alias -g L="| less"
+alias -g G="| grep"
+alias -g H="| head"
+alias -g T="| tail"
+alias -g C="| column"
+alias -g DN="/dev/null"
+alias -g DC="| decolor"
+
+# local zshrc
+source ~/.zshrc.local

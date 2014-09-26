@@ -1,0 +1,5 @@
+DISK="/dev/sda"
+BOOT_SIZE="200M"
+ROOT_SIZE="20G"
+SWAP_SIZE="4G"
+#HOME_SIZE=""

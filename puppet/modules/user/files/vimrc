@@ -1,0 +1,15 @@
+" Syntax
+syntax enable
+
+" Interface
+set shortmess+=I " no intro
+set noruler
+
+" Editing
+set tabstop=2
+set shiftwidth=2
+set expandtab
+set nowrap
+
+" Completion
+set wildmode=longest,list,full
